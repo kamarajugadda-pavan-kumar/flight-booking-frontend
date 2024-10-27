@@ -47,11 +47,20 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:${IMAGE_TAG}
           docker push ${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:latest
 
-      - name: Update Kubernetes Deployment Image
+      - name: Update Kubernetes deployment
         run: |
-          kubectl set image deployment/flight-booking-frontend-deployment flight-booking-frontend=${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:${{ github.sha }}
+          # Get current timestamp
+          TIMESTAMP=$(date +%s)
 
-      - name: Deploy to Kubernetes
-        run: |
+          # Update the image tag in deployment file
+          sed -i "s|kubectl.kubernetes.io/restartedAt:.*|kubectl.kubernetes.io/restartedAt: '$TIMESTAMP'|" k8s/flight-booking-frontend-deployment.yaml
+          sed -i 's|image: ${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:.*|image: ${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:${{ github.sha }}|' k8s/flight-booking-frontend-deployment.yaml
+
+          # Apply the changes
           kubectl apply -f k8s/flight-booking-frontend-deployment.yaml
           kubectl apply -f k8s/flight-booking-frontend-service.yaml
+
+      - name: Force rollout restart
+        run: |
+          kubectl rollout restart deployment flight-booking-frontend-deployment
+          kubectl rollout status deployment flight-booking-frontend-deployment
