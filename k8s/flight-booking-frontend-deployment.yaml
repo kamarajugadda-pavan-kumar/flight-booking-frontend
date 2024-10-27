@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: flight-booking-frontend
-          image: pavankd12/flight-booking-frontend:latest
+          image: pavankd12/flight-booking-frontend:{{ GIT_SHA }}
           ports:
             - containerPort: 80
           resources:

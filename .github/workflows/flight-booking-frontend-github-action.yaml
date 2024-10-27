@@ -47,6 +47,10 @@ jobs:
           docker push ${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:${IMAGE_TAG}
           docker push ${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:latest
 
+      - name: Update Kubernetes Deployment Image
+        run: |
+          kubectl set image deployment/flight-booking-frontend-deployment flight-booking-frontend=${{ secrets.DOCKER_USERNAME }}/flight-booking-frontend:${{ github.sha }}
+
       - name: Deploy to Kubernetes
         run: |
           kubectl apply -f k8s/flight-booking-frontend-deployment.yaml
