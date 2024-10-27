@@ -24,11 +24,11 @@ FROM nginx:latest
 # Copy build files from the builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# Copy custom NGINX configuration from the root of the repo
+COPY default.conf /etc/nginx/conf.d/default.conf
+
 # Expose port 80 to the outside
 EXPOSE 80
-
-# Copy custom NGINX configuration
-COPY --from=builder /app/default.conf /etc/nginx/conf.d/default.conf
 
 # Start NGINX
 CMD ["nginx", "-g", "daemon off;"]
