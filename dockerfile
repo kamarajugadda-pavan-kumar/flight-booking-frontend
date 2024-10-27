@@ -19,7 +19,7 @@ ENV VITE_BASE_URL=$VITE_BASE_URL
 RUN npm run build
 
 # Stage 2: Serve the built files with NGINX
-FROM nginx:latest
+FROM nginx
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf  /etc/nginx/conf.d
