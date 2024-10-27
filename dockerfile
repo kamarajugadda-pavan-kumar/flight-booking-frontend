@@ -24,9 +24,19 @@ FROM nginx:latest
 # Copy build files from the builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copy custom NGINX configuration from the root of the repo
-RUN rm /etc/nginx/conf.d/*
-COPY default.conf /etc/nginx/conf.d/default.conf
+# Add debugging steps
+RUN ls -la /etc/nginx/conf.d/
+RUN cat /etc/nginx/conf.d/default.conf || echo "No default.conf found"
+
+# Remove existing config files
+RUN rm -f /etc/nginx/conf.d/*
+
+# Copy custom NGINX configuration
+COPY ./default.conf /etc/nginx/conf.d/
+
+# Verify the copy
+RUN ls -la /etc/nginx/conf.d/
+RUN cat /etc/nginx/conf.d/default.conf || echo "No default.conf found"
 
 # Expose port 80 to the outside
 EXPOSE 80
