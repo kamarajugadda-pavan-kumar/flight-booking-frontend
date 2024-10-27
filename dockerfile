@@ -25,6 +25,7 @@ FROM nginx:latest
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Copy custom NGINX configuration from the root of the repo
+RUN rm /etc/nginx/conf.d/*
 COPY default.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80 to the outside
