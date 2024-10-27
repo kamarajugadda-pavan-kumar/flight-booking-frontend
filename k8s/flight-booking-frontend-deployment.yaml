@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flight-booking-frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flight-booking-frontend
+  template:
+    metadata:
+      labels:
+        app: flight-booking-frontend
+    spec:
+      containers:
+        - name: flight-booking-frontend
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: build-files
+              mountPath: /usr/share/nginx/html
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "500m"
+            limits:
+              memory: "512Mi"
+              cpu: "1"
+          initContainers:
+            # Init container to pull the code, create .env, build and prepare for NGINX
+            - name: flight-booking-frontend-builder
+              image: node:18
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  apt-get update && apt-get install -y git && \
+                  git clone https://github.com/your-github-username/flight-booking-frontend.git /app && \
+                  cd /app && \
+                  # Create the .env file from ConfigMap values
+                  echo "VITE_BASE_URL=$VITE_BASE_URL" > .env && \
+                  npm install && \
+                  npm run build && \
+                  cp -r dist/* /build
+              envFrom:
+                - configMapRef:
+                    name: flight-booking-frontend-config
+              volumeMounts:
+                - name: build-files
+                  mountPath: /build
+              resources:
+                requests:
+                  memory: "128Mi"
+                  cpu: "250m"
+                limits:
+                  memory: "256Mi"
+                  cpu: "500m"
+      volumes:
+        - name: build-files
+          emptyDir: {}

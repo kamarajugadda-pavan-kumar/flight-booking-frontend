@@ -1,0 +1,56 @@
+.seat-selection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.row-number {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.seat-group {
+  display: flex;
+  gap: 5px;
+}
+
+.seat {
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 12px;
+  text-align: center;
+}
+
+.seat.business {
+  background-color: #ffe4b5;
+}
+
+.seat.premium-economy {
+  background-color: #add8e6;
+}
+
+.seat.economy {
+  background-color: #90ee90;
+}
+
+.seat.selected {
+  border-color: #000;
+  background-color: #ffa07a;
+}
+
+.seat[disabled] {
+  background-color: #d3d3d3;
+  cursor: not-allowed;
+}
