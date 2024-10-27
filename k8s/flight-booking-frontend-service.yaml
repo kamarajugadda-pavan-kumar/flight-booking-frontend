@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: react-vite-service
 spec:
-  type: LoadBalancer # Use LoadBalancer for external access
+  type: LoadBalancer
   selector:
     app: react-vite
   ports:
     - protocol: TCP
-      port: 80 # Exposes port 80 to the outside world
-      targetPort: 80 # Port where NGINX is running inside the container
+      port: 80
+      targetPort: 80

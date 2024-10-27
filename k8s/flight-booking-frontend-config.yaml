@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: flight-booking-frontend-config
-data:
-  VITE_BASE_URL: "http://34.174.206.38:50000"
