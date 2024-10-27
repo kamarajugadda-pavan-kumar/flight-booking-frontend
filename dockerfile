@@ -27,8 +27,8 @@ RUN rm -rf ./*
 
 COPY --from=builder /app/dist .
 
-WORKDIR /etc/nginx/conf.d
-COPY --from=builder /app/nginx.conf  .
+# Copy nginx configuration directly
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
