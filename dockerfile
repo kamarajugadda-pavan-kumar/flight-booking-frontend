@@ -21,25 +21,16 @@ RUN npm run build
 # Stage 2: Serve the built files with NGINX
 FROM nginx:latest
 
-# Copy build files from the builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+WORKDIR /usr/share/nginx/
 
-# Add debugging steps
-RUN ls -la /etc/nginx/conf.d/
-RUN cat /etc/nginx/conf.d/default.conf || echo "No default.conf found"
+RUN rm -rf html
+RUN mkdir html
 
-# Remove existing config files
-RUN rm -f /etc/nginx/conf.d/*
+WORKDIR /
 
-# Copy custom NGINX configuration
-COPY ./default.conf /etc/nginx/conf.d/
+COPY ./nginx/nginx.conf /etc/nginx
+COPY --from=builder ./app/dist /usr/share/nginx/html
 
-# Verify the copy
-RUN ls -la /etc/nginx/conf.d/
-RUN cat /etc/nginx/conf.d/default.conf || echo "No default.conf found"
-
-# Expose port 80 to the outside
 EXPOSE 80
 
-# Start NGINX
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
