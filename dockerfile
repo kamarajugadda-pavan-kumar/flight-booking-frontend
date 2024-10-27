@@ -21,16 +21,7 @@ RUN npm run build
 # Stage 2: Serve the built files with NGINX
 FROM nginx:latest
 
-WORKDIR /usr/share/nginx/
-
-RUN rm -rf html
-RUN mkdir html
-
-WORKDIR /
-
-COPY ./nginx/nginx.conf /etc/nginx
-COPY --from=builder ./app/dist /usr/share/nginx/html
-
+COPY --from=builder /app/dist /usr/share/nginx/html
+COPY nginx.conf  /etc/nginx/conf.d
 EXPOSE 80
-
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
